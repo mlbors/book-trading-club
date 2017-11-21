@@ -29,26 +29,13 @@ const dbBooks = require('../db/books')
 
 router.get('/', (req, res) => {
 
-  dbStocks.findAll((err, results) => {
-    
-    let chartData, chartLabels
-
-    if (typeof results !== 'undefined' && results !== null && results !== '') {
-      chartData = results.map((d) => d.data)
-      chartLabels = results.map((d) => d.name)
-    }
+  dbBooks.findAll((err, results) => {
 
     res.render('index', {
-      title: 'Stocks',
+      title: 'List of books',
       auth: req.isAuthenticated(),
       error: err,
-      chartData: {
-        datasets:[{
-          data: chartData
-        }],
-        labels: chartLabels
-      },
-      stocks: chartLabels
+      data: results
     })
 
   })

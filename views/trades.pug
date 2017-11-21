@@ -1,0 +1,16 @@
+if (trades && trades.length)
+  ul(class='trades-list')
+    each trade in trades
+      li.trade-item
+      | Title: #{trade.title}
+      | Book: #{trade.book}
+      | Description: #{trade.description}
+      | Status: #{trade.status}
+      if user === trade.user
+        a(class='btn btn-primary action' href='#' data-action='delete-trade' data-id=trade.id) Remove trade
+        a(class='btn btn-warning action' href='#' data-action='close-trade' data-id=trade.id) Close trade
+      if !trade.closed
+        a(class='btn btn-success action' href='#' data-action='accept-trade' data-id=trade.id) Accept
+        a(class='btn btn-danger action' href='#' data-action='decline-trade' data-id=trade.id) Decline
+else
+  p No requests!

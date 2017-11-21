@@ -35,13 +35,34 @@ const UIHandler = () => {
   /************************************************************/
 
   /**********/
+  /********** MASONRY **********/
+  /**********/
+
+  _initMasonry = () => {
+    return () => {
+      $('.grid').masonry({
+        itemSelector: '.grid-item',
+        columnWidth: '.grid-sizer',
+        percentPosition: true
+      })
+    }
+  }
+
+  /************************************************************/
+  /************************************************************/
+
+  /**********/
   /********** INIT **********/
   /**********/
 
   return {
     init: () => {
       const handler = _handleUIClick()
+      const masonry = _initMasonry()
+
       handler()
+      masonry()
+
     }
   }
 

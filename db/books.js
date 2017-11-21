@@ -63,6 +63,42 @@ const self = module.exports = {
   /************************************************************/
   /************************************************************/
 
+  /*************************/
+  /***** FIND BY TITLE *****/
+  /*************************/
+
+  /*
+   * @var String title
+   * @var Function callback a callback function
+   */
+
+  findByTitle: (title, callback) => {
+    
+    MongoClient.connect(dbUrl, (err, db) => {
+
+      if (err) {
+        return callback(err)
+      } 
+      
+      db.collection('books').findOne({
+        title: title
+      }, (err, result) => {
+        
+        if (err) {
+          return callback(err)
+        }
+
+        db.close()
+        return callback(null, result)
+      })
+
+    })
+
+  },
+
+  /************************************************************/
+  /************************************************************/
+
   /**********************/
   /***** FIND BY ID *****/
   /**********************/

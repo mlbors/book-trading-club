@@ -1,0 +1,39 @@
+extends layout
+
+block content
+
+  div.row
+    div.col-md-12
+      h1= title
+
+  if error
+    div.row
+      div.col-md-12
+        div.alert.danger
+          p= error
+
+  if message
+    div.row
+      div.col-md-12
+        div.alert.success
+          p= message
+
+  div.row
+    div.col-md-12
+      form(method='POST' action=action)
+        div.form-group
+          label(for='title') Title
+          - var titleValue = (book.title !== null) ? book.title : ''
+          input.form-control(type='text' id='title' name='title' placeholder='Title' value=titleValue)
+        div.form-group
+          label(for='isbn') ISBN
+          - var isbnValue = (book.isbn !== null) ? book.isbn : ''
+          input.form-control(type='text' id='isbn' name='isbn' placeholder='ISBN' value=isbnValue)
+        div.form-group
+          label(for='description') Description
+          - var descriptionValue = (book.description !== null) ? book.description : ''
+          textarea.form-control(id='description' name='description' placeholder='Description') #{descriptionValue}
+        input.form-control(type='hidden' id='book' name='book' value=book)
+        button.btn.btn-primary(type='submit') #{submit}
+
+

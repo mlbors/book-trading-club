@@ -1,0 +1,40 @@
+extends layout
+
+block content
+
+  div.row
+    div.col-md-12
+      h1= title
+
+  div.row
+    div.col-md-12
+      h2 Info
+
+  div.row
+    div.col-md-12
+      p <strong>Name :</strong> #{user.name}
+      p <strong>Bio :</strong> #{user.bio}
+
+  if (auth && user._id === user)
+    div.row
+      div.col-md-12
+        h2 Your trades
+    div.row
+      div.col-md-12
+        - var trades = userTrades
+        include trades.pug
+    div.row
+      div.col-md-12
+        h2 Trades you have received
+    div.row
+      div.col-md-12
+        - var trades = receivedTrades
+        include trades.pug
+
+  div.row
+    div.col-md-12
+      h2 Books
+
+  div.row
+    div.col-md-12
+      include list.pug

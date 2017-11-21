@@ -61,6 +61,10 @@ router.post('/add', (req, res) => {
 /******************/
 
 router.delete('/delete', (req, res) => {
+
+  const data = JSON.parse(req.body.data)
+  const book = data.book
+
   dbBooks.delete(book, (err, result) => {
     res.send({
       result: result,
@@ -69,6 +73,26 @@ router.delete('/delete', (req, res) => {
       error: err
     })
   })
+})
+
+/************************************************************/
+/************************************************************/
+
+/*****/
+/***** INDEX *****/
+/*****/
+
+router.get('/search/:term', (req, res) => {
+
+  dbBooks.findByTitle(req.params.term, (err, result) => {
+    res.send({
+      result: result,
+      info: null,
+      auth: req.isAuthenticated(),
+      error: err
+    })
+  })
+	
 })
 
 /************************************************************/
