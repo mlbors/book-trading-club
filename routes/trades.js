@@ -32,7 +32,7 @@ router.get('/edit/:book/:receiver', (req, res) => {
     auth: req.isAuthenticated(),
     book: req.params.book,
     receiver: req.params.receiver,
-    error: err
+    error: null
   })
   
 })

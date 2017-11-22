@@ -26,7 +26,7 @@ require('dotenv').config()
 
 const googleBooksApi = {
   api_key: process.env.GOOGLE_BOOKS_API_KEY,
-  api_url: 'https://www.googleapis.com/books/v1/volumes?key=' + api_key
+  api_url: 'https://www.googleapis.com/books/v1/volumes?key=' + this.api_key
 }
 
 /************************************************************/

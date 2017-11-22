@@ -12,7 +12,7 @@
 /***** MAIN *****/
 /****************/
 
-const ActionsHandler = (uiHandler) => {
+const ActionsHandler = () => {
 
   /**********/
   /********** VARS **********/
@@ -22,7 +22,7 @@ const ActionsHandler = (uiHandler) => {
    * @var Object _uiHandler Object that handles UI
    */
 
-  let _uiHandler = uiHandler
+  let _uiHandler
 
   /************************************************************/
   /************************************************************/
@@ -78,7 +78,7 @@ const ActionsHandler = (uiHandler) => {
       switch (action) {
         case 'accept-trade':
           _uiHandler.manageMessageInfo(1, 'success', 'Trade accepted!')
-          const li = $('li#' + data.trade)
+          var li = $('li#' + data.trade)
           li.children('a.accept-trade').remove()
           li.children('a.decline-trade').remove()
           resolve()
@@ -86,7 +86,7 @@ const ActionsHandler = (uiHandler) => {
 
         case 'decline-trade':
           _uiHandler.manageMessageInfo(1, 'success', 'Trade declined!')
-          const li = $('li#' + data.trade)
+          var li = $('li#' + data.trade)
           li.children('a.accept-trade').remove()
           li.children('a.decline-trade').remove()
           resolve()
@@ -94,7 +94,7 @@ const ActionsHandler = (uiHandler) => {
   
         case 'close-trade':
           _uiHandler.manageMessageInfo(1, 'success', 'Trade closed!')
-          const li = $('li#' + data.trade)
+          var li = $('li#' + data.trade)
           li.children('a.close-trade').remove()
           li.append('<a class="btn btn-primary action delete-trade" href="#" data-action="delete-trade" data-id="' + data.trade + '">Remove trade</a>')
           resolve()
@@ -102,7 +102,7 @@ const ActionsHandler = (uiHandler) => {
   
         case 'delete-trade':
           _uiHandler.manageMessageInfo(1, 'success', 'Trade deleted!')
-          const li = $('li#' + data.trade)
+          var li = $('li#' + data.trade)
           li.children('a.delete-trade').remove()
           resolve()
           break
@@ -264,9 +264,11 @@ const ActionsHandler = (uiHandler) => {
    * @return Bool
    */
   
-  _handleActionsSubmit = () => {
+  _actionSubmit = () => {
     $(document).on('submit', 'form.action-form', (e) => {
       e.preventDefault()
+
+      console.log('submit')
 
       _uiHandler.manageMessageInfo(0, null, null)
 
@@ -290,10 +292,12 @@ const ActionsHandler = (uiHandler) => {
             _uiHandler.manageMessageInfo(0, null, null)
 
             if (typeof handleResult.redirection !== 'undefined' && handleResult.redirection !== null) {
-              window.location.replace(handleResult.redirection)
+              setTimeout(() => {
+                window.location.replace(handleResult.redirection)
+              }, 2500)
             }
             
-            return true
+            return false
           }).catch((err) => {
             console.warn('Error during request...')
             console.error(err)
@@ -402,16 +406,38 @@ const ActionsHandler = (uiHandler) => {
   /************************************************************/
 
   /**********/
-  /********** INIT **********/
+  /********** SET UI HANDLER **********/
   /**********/
 
+   /*
+    * @var Object uiHandler Object that handles UI
+    */
+
+  _setUiHandler = (uiHandler) => {
+    _uiHandler = uiHandler
+  }
+
+  /************************************************************/
+  /************************************************************/
+
   return {
-    init: () => {
+
+    /**********/
+    /********** INIT **********/
+    /**********/
+
+    /*
+     * @var Object uiHandler Object that handles UI
+     */
+
+    init: (uiHandler) => {
+      _setUiHandler(uiHandler)
       const actionsHandler = _handleActionsClick()
-      const submitHandler = _handleActionsClick()
-      actionsHandle()
+      const submitHandler = _handleActionsSubmit()
+      actionsHandler()
       submitHandler()
     }
+
   }
 
 }

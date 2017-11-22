@@ -4,26 +4,4 @@ block content
 
   div.row
     div.col-md-12
-      h1= title
-
-  div(id='message-info')
-    div.row
-      div.cold-md-12
-        div.content
-          p
-
-  if error
-    div.row
-      div.col-md-12
-        div.alert.danger
-          p= error
-
-  if message
-    div.row
-      div.col-md-12
-        div.alert.success
-          p= message
-
-  div.row
-    div.col-md-12
       include list.pug

@@ -43,7 +43,7 @@ router.get('/', (req, res) => {
 /***** ADD *****/
 /***************/
 
-router.get('/add', (req, res) => {
+router.get('/add-book', (req, res) => {
 
   res.render('book-form', {
     title: 'Add book',
@@ -52,7 +52,7 @@ router.get('/add', (req, res) => {
     action: '/books/add',
     submit: 'Add',
     book: null,
-    error: err
+    error: null
   })
 
 })

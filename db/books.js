@@ -190,7 +190,7 @@ const self = module.exports = {
           user: user,
           userData: {
             username: userData.username,
-            displayNamed = userData.displayNamed
+            displayNamed: userData.displayNamed
           }
         },
         (err, res) => {

@@ -25,7 +25,7 @@ html
                 a(class='home' href='/') Home
               if auth
                 li
-                  a(class='add-book' href='/books/add') Add book
+                  a(class='add-book' href='/books/add-book') Add book
               li
                 if auth
                   a(class='logout' href='/logout') Log Out
@@ -33,6 +33,29 @@ html
                   a(class='login' href='/auth/twitter') Log In
 
     div(id='main' class='container')
+
+      div.row
+        div.col-md-12
+          h1= title
+
+      div(id='message-info')
+        div.row
+          div.cold-md-12
+            div.content
+              p
+
+      if error
+        div.row
+          div.col-md-12
+            div.alert.danger
+              p= error
+
+      if message
+        div.row
+          div.col-md-12
+            div.alert.success
+              p= message
+
       block content
 
     div(id='footer' class='footer')

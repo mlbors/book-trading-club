@@ -31,11 +31,13 @@ router.get('/', (req, res) => {
 
   dbBooks.findAll((err, results) => {
 
+    console.log(results)
+
     res.render('index', {
       title: 'List of books',
       auth: req.isAuthenticated(),
       error: err,
-      data: results
+      books: results
     })
 
   })
