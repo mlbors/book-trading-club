@@ -45,17 +45,13 @@ const self = module.exports = {
     
     MongoClient.connect(dbUrl, (err, db) => {
 
-      if (err) {
-        return callback(err)
-      } 
+      if (err) return callback(err) 
       
       db.collection('users').findOne({
         _id: id
       }, (err, result) => {
         
-        if (err) {
-          return callback(err)
-        }
+        if (err) return callback(err)
 
         db.close()
         return callback(null, result)
@@ -63,6 +59,70 @@ const self = module.exports = {
 
     })
 
-  }
+  },
+
+  /************************************************************/
+  /************************************************************/
+
+  /*******************/
+  /***** FIND BY *****/
+  /*******************/
+
+  /*
+   * @var Object query
+   * @var Function callback a callback function
+   */
+
+  findBy: (query, callback) => {
+    
+    MongoClient.connect(dbUrl, (err, db) => {
+
+      if (err)  return callback(err) 
+      
+      db.collection('users').findOne(query, (err, result) => {
+        
+        if (err) return callback(err)
+
+        db.close()
+        return callback(null, result)
+      })
+
+    })
+
+  },
+
+  /************************************************************/
+  /************************************************************/
+
+  /******************/
+  /***** UPDATE *****/
+  /******************/
+
+  /*
+   * @var String id
+   * @var String bio
+   * @var Function callback a callback function
+   */
+
+  update: (id, bio, callback) => {
+    
+    MongoClient.connect(dbUrl, (err, db) => {
+      
+      if (err) return callback(err)
+      
+      db.collection('users').updateOne({
+        _id: id
+      },
+      {
+        bio: bio
+      },
+      (err, res) => {
+        db.close()
+        return callback(err, res)
+      })
+
+    })
+
+  },
 
 }

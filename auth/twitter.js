@@ -60,6 +60,7 @@ passport.use(new TwitterStrategy({
               const newUser = {
                 _id: shortid.generate(),
                 token: token,
+                username: profile.username,
                 displayName: profile.displayName
               }
 

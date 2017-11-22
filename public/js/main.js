@@ -56,9 +56,9 @@ const Main = () => {
 
       _usersHandler.getStatus().then((userData) => {
 
-        _actionsHandler.init()
         _uiHandler.init()
-
+        _actionsHandler.init(_uiHandler)
+        
       }).catch((e) => {
         console.warn('Error while getting user data...')
         console.error(err)

@@ -1,6 +1,6 @@
 /**
  * freeCodeCamp - Back End Development Certification - Dynamic Web Application Projects
- * Db - Books
+ * Db - Trades
  * 
  * @author MLBORS
  * @version 1.0.0.0
@@ -16,7 +16,6 @@ const mongodb = require('mongodb')
 const shortid = require('shortid')
 
 const dbInfo = require('./db')
-const usersHelpers = require('../helpers/users')
 
 /************************************************************/
 /************************************************************/
@@ -48,43 +47,11 @@ const self = module.exports = {
     
       if (err) return callback(err)
       
-      db.collection('books')
+      db.collection('trades')
       .find({})
       .sort({'date': -1})
       .toArray((err, result) => {
         if (err) return callback(err)
-        db.close()
-        return callback(null, result)
-      })
-
-    })
-
-  },
-
-  /************************************************************/
-  /************************************************************/
-
-  /*************************/
-  /***** FIND BY TITLE *****/
-  /*************************/
-
-  /*
-   * @var String title
-   * @var Function callback a callback function
-   */
-
-  findByTitle: (title, callback) => {
-    
-    MongoClient.connect(dbUrl, (err, db) => {
-
-      if (err) return callback(err)
-      
-      db.collection('books').findOne({
-        title: title
-      }, (err, result) => {
-        
-        if (err) return callback(err)
-
         db.close()
         return callback(null, result)
       })
@@ -101,7 +68,7 @@ const self = module.exports = {
   /**********************/
 
   /*
-   * @var String id user's id
+   * @var String id
    * @var Function callback a callback function
    */
 
@@ -109,13 +76,13 @@ const self = module.exports = {
     
     MongoClient.connect(dbUrl, (err, db) => {
 
-      if (err) return callback(err)
+      return callback(err)
       
-      db.collection('books').findOne({
+      db.collection('trades').findOne({
         _id: id
       }, (err, result) => {
         
-        if (err) return callback(err)
+        return callback(err)
 
         db.close()
         return callback(null, result)
@@ -143,7 +110,7 @@ const self = module.exports = {
 
       if (err)  return callback(err) 
       
-      db.collection('books')
+      db.collection('trades')
       .find(query)
       .sort({'date': -1})
       .toArray((err, result) => {
@@ -159,46 +126,39 @@ const self = module.exports = {
   /************************************************************/
   /************************************************************/
 
-  /********************/
-  /***** ADD BOOK *****/
-  /********************/
+  /*********************/
+  /***** ADD TRADE *****/
+  /*********************/
 
   /*
    * @var String title
-   * @var String isbn
    * @var String description
-   * @var String image
-   * @var String user
+   * @var String book
+   * @var String bookTitle
+   * @var String receiver
+   * @var String sender
    * @var Function callback a callback function
    */
 
-  add: (title, isbn, description, image, user, callback) => {
+  add: (title, description, book, bookTitle, receiver, sender, callback) => {
 
     MongoClient.connect(dbUrl, (err, db) => {
       
       if (err) return callback(err)
-
-      usersHelpers.getUserData(user).then((userData) => {
-
-        db.collection('stocks').insertOne({
-          _id: shortid.generate(),
-          date: new Date(),
-          title: title,
-          isbn: isbn,
-          description: description,
-          image: image,
-          user: user,
-          userData: {
-            username: userData.username,
-            displayNamed = userData.displayNamed
-          }
-        },
-        (err, res) => {
-          db.close()
-          return callback(err, res)
-        })
-
-      }).catch((err) => {
+      
+      db.collection('trades').insertOne({
+        _id: shortid.generate(),
+        date: new Date(),
+        title: title,
+        description: description,
+        book: book,
+        bookTitle: bookTitle,
+        receiver: receiver,
+        sender: sender,
+        status: null,
+        closed: false
+      },
+      (err, res) => {
         db.close()
         return callback(err, res)
       })
@@ -210,31 +170,60 @@ const self = module.exports = {
   /************************************************************/
   /************************************************************/
 
-  /******************/
-  /***** UPDATE *****/
-  /******************/
+  /*****************/
+  /***** CLOSE *****/
+  /*****************/
 
   /*
    * @var String id
-   * @var String title
-   * @var String isbn
-   * @var String description
    * @var Function callback a callback function
    */
 
-  update: (id, title, isbn, description, callback) => {
+  close: (id, callback) => {
     
     MongoClient.connect(dbUrl, (err, db) => {
       
       if (err) return callback(err)
       
-      db.collection('stocks').updateOne({
+      db.collection('trades').updateOne({
         _id: id
       },
       {
-        title: title,
-        isbn: isbn,
-        description: description
+        close: true
+      },
+      (err, res) => {
+        db.close()
+        return callback(err, res)
+      })
+
+    })
+
+  },
+
+  /************************************************************/
+  /************************************************************/
+
+  /*************************/
+  /***** UPDATE STATUS *****/
+  /*************************/
+
+  /*
+   * @var String id
+   * @var String status
+   * @var Function callback a callback function
+   */
+
+  updateStatus: (id, status, callback) => {
+    
+    MongoClient.connect(dbUrl, (err, db) => {
+      
+      if (err) return callback(err)
+      
+      db.collection('trades').updateOne({
+        _id: id
+      },
+      {
+        status: status
       },
       (err, res) => {
         db.close()
@@ -261,13 +250,13 @@ const self = module.exports = {
     
     MongoClient.connect(dbUrl, (err, db) => {
 
-      if (err) return callback(err)
+      return callback(err)
       
-      db.collection('books').deleteOne({
+      db.collection('trades').deleteOne({
         _id: id
       }, (err, result) => {
         
-        if (err) return callback(err)
+        return callback(err)
 
         db.close()
         return callback(null, result)
@@ -292,11 +281,11 @@ const self = module.exports = {
     
     MongoClient.connect(dbUrl, (err, db) => {
 
-      if (err) return callback(err) 
+      return callback(err) 
       
-      db.collection('books').deleteMany({}, (err, result) => {
+      db.collection('trades').deleteMany({}, (err, result) => {
         
-        if (err) return callback(err)
+        return callback(err)
 
         db.close()
         return callback(null, result)

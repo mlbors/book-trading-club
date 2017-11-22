@@ -1,6 +1,6 @@
 /**
  * freeCodeCamp - Back End Development Certification - Dynamic Web Application Projects
- * Helpers - Users
+ * Helpers - Trades
  * 
  * @author MLBORS
  * @version 1.0.0.0
@@ -12,30 +12,32 @@
 /***** IMPORTS *****/
 /*******************/
 
-const dbUsers = require('../db/users')
+const dbTrades = require('../db/trades')
 
 /************************************************************/
 /************************************************************/
 
 const self = module.exports = {
 
-  /**************************/
-  /***** GET USERS DATA *****/
-  /**************************/
+  /***************************/
+  /***** GET USER TRADES *****/
+  /***************************/
 
   /*
    * @var String id
    * @return Promise
    */
 
-  getUserData: (id) => {
+  getUserTrades: (id) => {
     return new Promise((resolve, reject) => {
 
       if (typeof id !== 'undefined' && id !== null && id) {
-        dbUsers.findById(id, (err, data) => {
+
+        dbTrades.findBy({sender: id}, (err, data) => {
           if (err) reject(err)
           resolve(data)
         })  
+
       } else {
         resolve(null)
       }
@@ -46,23 +48,25 @@ const self = module.exports = {
   /************************************************************/
   /************************************************************/
 
-  /**************************************/
-  /***** GET USERS DATA BY USERNAME *****/
-  /**************************************/
+  /*******************************/
+  /***** GET RECIEVED TRADES *****/
+  /*******************************/
 
   /*
-   * @var String username
+   * @var String id
    * @return Promise
    */
 
-  getUserDataByUsername: (username) => {
+  getRecievedTrades: (id) => {
     return new Promise((resolve, reject) => {
 
-      if (typeof username !== 'undefined' && username !== null && username !== '') {
-        dbUsers.findBy({username: username}, (err, data) => {
+      if (typeof id !== 'undefined' && id !== null && id) {
+
+        dbTrades.findBy({receiver: id}, (err, data) => {
           if (err) reject(err)
           resolve(data)
         })  
+
       } else {
         resolve(null)
       }

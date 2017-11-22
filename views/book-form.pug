@@ -4,23 +4,7 @@ block content
 
   div.row
     div.col-md-12
-      h1= title
-
-  if error
-    div.row
-      div.col-md-12
-        div.alert.danger
-          p= error
-
-  if message
-    div.row
-      div.col-md-12
-        div.alert.success
-          p= message
-
-  div.row
-    div.col-md-12
-      form(method='POST' action=action)
+      form(id='book-form' class='action-form' method='POST' data-action=dataAction action=action)
         div.form-group
           label(for='title') Title
           - var titleValue = (book.title !== null) ? book.title : ''
@@ -33,7 +17,7 @@ block content
           label(for='description') Description
           - var descriptionValue = (book.description !== null) ? book.description : ''
           textarea.form-control(id='description' name='description' placeholder='Description') #{descriptionValue}
-        input.form-control(type='hidden' id='book' name='book' value=book)
+        input.form-control(type='hidden' id='book' name='book' value=book._id)
         button.btn.btn-primary(type='submit') #{submit}
 
 

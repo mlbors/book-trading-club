@@ -10,12 +10,16 @@ block content
     div.col-md-12
       h2 Info
 
-  div.row
-    div.col-md-12
-      p <strong>Name :</strong> #{user.name}
-      p <strong>Bio :</strong> #{user.bio}
+  if (data !== null)
+    div.row
+      div.col-md-12
+        p <strong>Name :</strong> #{data.name}
+        p <strong>Bio :</strong> #{data.bio}
+        if (auth && data._id === user)
+          p
+            a(class='btn btn-primary' href='users/edit-profile/' + data._id) Edit profile
 
-  if (auth && user._id === user)
+  if (auth && data._id === user)
     div.row
       div.col-md-12
         h2 Your trades

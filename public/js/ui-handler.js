@@ -51,11 +51,12 @@ const UIHandler = () => {
   /************************************************************/
   /************************************************************/
 
-  /**********/
-  /********** INIT **********/
-  /**********/
-
   return {
+
+    /**********/
+    /********** INIT **********/
+    /**********/
+
     init: () => {
       const handler = _handleUIClick()
       const masonry = _initMasonry()
@@ -63,7 +64,37 @@ const UIHandler = () => {
       handler()
       masonry()
 
+    },
+
+    /************************************************************/
+    /************************************************************/
+
+    /**********/
+    /********** MANAGE MESSAGE INFO **********/
+    /**********/
+
+    manageMessageInfo: (state, type, content) => {
+
+      if ($('#message-info').length > 0) {
+
+        switch(state) {
+          case 0:
+            $('#message-info').hide()
+            $('#message-info .content').removeClass('alert-success alert-info alert-warning alert-danger')
+            $('#message-info .content p').html('')
+            break
+
+          case 1:
+            $('#message-info .content').addClass('alert-' + type)
+            $('#message-info .content p').html(content)
+            $('#message-info').show()
+            break
+        }
+
+      }
+
     }
+
   }
 
 }

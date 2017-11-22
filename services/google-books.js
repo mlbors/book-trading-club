@@ -43,10 +43,10 @@ const self = module.exports = {
    * @return Promise
    */
 
-  getData: (isn) => {
+  getData: (isbn) => {
     return new Promise((resolve, reject) => {
 
-      const url = googleBooksApi.api_url + '?isbn=' + isbn
+      const url = googleBooksApi.api_url + '?q=isbn:' + isbn
 
       request(url, (error, response, body) => {
 

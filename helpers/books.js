@@ -1,6 +1,6 @@
 /**
  * freeCodeCamp - Back End Development Certification - Dynamic Web Application Projects
- * Helpers - Users
+ * Helpers - Books
  * 
  * @author MLBORS
  * @version 1.0.0.0
@@ -12,7 +12,7 @@
 /***** IMPORTS *****/
 /*******************/
 
-const dbUsers = require('../db/users')
+const dbBooks = require('../db/books')
 
 /************************************************************/
 /************************************************************/
@@ -20,7 +20,7 @@ const dbUsers = require('../db/users')
 const self = module.exports = {
 
   /**************************/
-  /***** GET USERS DATA *****/
+  /***** GET USER BOOKS *****/
   /**************************/
 
   /*
@@ -28,14 +28,16 @@ const self = module.exports = {
    * @return Promise
    */
 
-  getUserData: (id) => {
+  getUserBooks: (id) => {
     return new Promise((resolve, reject) => {
 
       if (typeof id !== 'undefined' && id !== null && id) {
-        dbUsers.findById(id, (err, data) => {
+
+        dbBooks.findBy({user: id}, (err, data) => {
           if (err) reject(err)
           resolve(data)
         })  
+
       } else {
         resolve(null)
       }
@@ -46,23 +48,25 @@ const self = module.exports = {
   /************************************************************/
   /************************************************************/
 
-  /**************************************/
-  /***** GET USERS DATA BY USERNAME *****/
-  /**************************************/
+  /********************/
+  /***** GET BOOK *****/
+  /********************/
 
   /*
-   * @var String username
+   * @var String id
    * @return Promise
    */
 
-  getUserDataByUsername: (username) => {
+  getBook: (id) => {
     return new Promise((resolve, reject) => {
 
-      if (typeof username !== 'undefined' && username !== null && username !== '') {
-        dbUsers.findBy({username: username}, (err, data) => {
+      if (typeof id !== 'undefined' && id !== null && id) {
+
+        dbBooks.findById(id, (err, data) => {
           if (err) reject(err)
           resolve(data)
         })  
+
       } else {
         resolve(null)
       }

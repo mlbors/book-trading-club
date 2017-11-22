@@ -12,12 +12,310 @@
 /***** MAIN *****/
 /****************/
 
-const ActionsHandler = () => {
+const ActionsHandler = (uiHandler) => {
 
   /**********/
   /********** VARS **********/
   /**********/
 
+  /*
+   * @var Object _uiHandler Object that handles UI
+   */
+
+  let _uiHandler = uiHandler
+
+  /************************************************************/
+  /************************************************************/
+
+  /**********/
+  /********** MAKE REQUEST **********/
+  /**********/
+
+  /*
+   * @var String url
+   * @var String type
+   * @var String action
+   * @var Object data
+   */
+
+  _makeRequest = (url, type, action, data) => {
+    return $.ajax({
+      url: window.location.origin + url,
+      type: type,
+      cache: false,
+      dataType: 'json',
+      data: {
+        action,
+        data
+      },
+      succes: (result) => {
+        return result
+      },
+      error: (err) => {
+        return {error: err}
+      }
+    })
+  }
+
+  /************************************************************/
+  /************************************************************/
+
+  /**********/
+  /********** HANDLE ACTION RESULT **********/
+  /**********/
+
+  /*
+   * @var Object target
+   * @var String action
+   * @var Object data
+   * @return Promise
+   */
+
+  _handleActionResult = (target, action, data) => {
+
+    return new Promise((resolve, reject) => {
+
+      switch (action) {
+        case 'accept-trade':
+          _uiHandler.manageMessageInfo(1, 'success', 'Trade accepted!')
+          const li = $('li#' + data.trade)
+          li.children('a.accept-trade').remove()
+          li.children('a.decline-trade').remove()
+          resolve()
+          break
+
+        case 'decline-trade':
+          _uiHandler.manageMessageInfo(1, 'success', 'Trade declined!')
+          const li = $('li#' + data.trade)
+          li.children('a.accept-trade').remove()
+          li.children('a.decline-trade').remove()
+          resolve()
+          break
+  
+        case 'close-trade':
+          _uiHandler.manageMessageInfo(1, 'success', 'Trade closed!')
+          const li = $('li#' + data.trade)
+          li.children('a.close-trade').remove()
+          li.append('<a class="btn btn-primary action delete-trade" href="#" data-action="delete-trade" data-id="' + data.trade + '">Remove trade</a>')
+          resolve()
+          break
+  
+        case 'delete-trade':
+          _uiHandler.manageMessageInfo(1, 'success', 'Trade deleted!')
+          const li = $('li#' + data.trade)
+          li.children('a.delete-trade').remove()
+          resolve()
+          break
+  
+        case 'delete-book':
+          _uiHandler.manageMessageInfo(1, 'success', 'Book deleted!')
+          $('.grid div#' + data.book)
+          resolve()
+          break
+
+        case 'save-profile':
+          _uiHandler.manageMessageInfo(1, 'success', 'Profile saved!')
+          $('#profil-form').find("input[type=text], textarea").val('')
+          resolve({redirection: window.location.origin + '/users/' + data.username})
+          break
+
+        case 'add-book':
+          _uiHandler.manageMessageInfo(1, 'success', 'Book added!')
+          $('#book-form').find("input[type=text], textarea").val('')
+          resolve({redirection: window.location.origin})
+          break
+
+        case 'edit-book':
+          _uiHandler.manageMessageInfo(1, 'success', 'Book edited!')
+          resolve({redirection: window.location.origin})
+          break
+
+        case 'add-trade':
+          _uiHandler.manageMessageInfo(1, 'success', 'Trade created!')
+          $('#trade-form').find("input[type=text], textarea").val('')
+          resolve({redirection: window.location.origin})
+          break
+      }
+      
+    })
+
+  }
+
+  /************************************************************/
+  /************************************************************/
+
+  /**********/
+  /********** PREPARE ACTION **********/
+  /**********/
+
+  /*
+   * @var Object target
+   * @var String action
+   * @return Object
+   */
+
+  _prepareAction = (target, action) => {
+    let dataAction = {}
+
+    let url = ''
+    let type = ''
+    let data = {}
+
+    switch (action) {
+      case 'accept-trade':
+        url = '/trades/update-status'
+        type = 'POST'
+        data = {
+          trade: target.attr('data-id'),
+          status: 'accepted'
+        }
+        break
+
+      case 'decline-trade':
+        url = '/trades/update-status'
+        type = 'POST'
+        data = {
+          trade: target.attr('data-id'),
+          status: 'declined'
+        }
+        break
+
+      case 'close-trade':
+        url = '/trades/close'
+        type = 'POST'
+        data = {
+          trade: target.attr('data-id')
+        }
+        break
+
+      case 'delete-trade':
+        url = '/trades/delete'
+        type = 'POST'
+        data = {
+          trade: target.attr('data-id')
+        }
+        break
+
+      case 'delete-book':
+        url = '/books/delete'
+        type = 'DELETE'
+        data = {
+          book: target.attr('data-id')
+        }
+        break
+
+      case 'save-profile':
+        url = '/users/save-profile'
+        type = 'POST'
+        data = {
+          bio: $('#profil-form #bio').val(),
+          username: $('#profil-form #username').val()
+        }
+        break
+
+      case 'add-book':
+        url = '/books/add'
+        type = 'POST'
+        data = {
+          title: $('#book-form #title').val(),
+          isbn: $('#book-form #isbn').val(),
+          description: $('#book-form #description').val()
+        }
+        break
+
+      case 'edit-book':
+        url = '/books/update'
+        type = 'POST'
+        data = {
+          title: $('#book-form #title').val(),
+          isbn: $('#book-form #isbn').val(),
+          description: $('#book-form #description').val(),
+          book: $('#book-form #book').val()
+        }
+        break
+
+      case 'add-trade':
+        url = '/trades/add'
+        type = 'POST'
+        data = {
+          book: $('#trade-form #book').val(),
+          receiver: $('#trade-form #receiver').val()
+        }
+        break
+    }
+
+    dataAction = {
+      url: url,
+      type: type,
+      data: data
+    }
+
+    return dataAction
+  }
+
+  /************************************************************/
+  /************************************************************/
+
+  /**********/
+  /********** ACTION SUBMIT **********/
+  /**********/
+
+  /*
+   * @return Bool
+   */
+  
+  _handleActionsSubmit = () => {
+    $(document).on('submit', 'form.action-form', (e) => {
+      e.preventDefault()
+
+      _uiHandler.manageMessageInfo(0, null, null)
+
+      const target = $(e.currentTarget)
+      const action = target.attr('data-action')
+      const dataAction = _prepareAction(target, action)
+
+      console.log(target)
+
+      _makeRequest(dataAction.url, dataAction.type, action, JSON.stringify(dataAction.data)).then((result) => {
+        
+        if (result.error !== null) {
+          console.warn('Error during request...')
+          console.error(result.error)
+          _uiHandler.manageMessageInfo(1, 'danger', result.error)
+          return false
+        }
+
+        if (result.info === null) {
+          _handleActionResult(target, action, dataAction).then((handleResult) => {
+            _uiHandler.manageMessageInfo(0, null, null)
+
+            if (typeof handleResult.redirection !== 'undefined' && handleResult.redirection !== null) {
+              window.location.replace(handleResult.redirection)
+            }
+            
+            return true
+          }).catch((err) => {
+            console.warn('Error during request...')
+            console.error(err)
+            _uiHandler.manageMessageInfo(1, 'danger', result.error)
+            return false
+          })
+        }
+
+        console.log(result.info)
+        _uiHandler.manageMessageInfo(1, 'warning', result.info)
+        return false
+
+      }).catch((err) => {
+        console.warn('Error during request...')
+        console.error(err)
+        _uiHandler.manageMessageInfo(1, 'danger', result.error)
+        return false
+      })
+
+    })
+  } 
+   
   /************************************************************/
   /************************************************************/
 
@@ -25,15 +323,69 @@ const ActionsHandler = () => {
   /********** ACTION CLICK **********/
   /**********/
 
+  /*
+   * @return Bool
+   */
+
   _actionClick = () => {
     $(document).on('click', 'a.btn.action', (e) => {
       e.preventDefault()
-      return false
-    })
 
+      _uiHandler.manageMessageInfo(0, null, null)
+
+      const target = $(e.currentTarget)
+      const action = target.attr('data-action')
+      const dataAction = _prepareAction(target, action)
+
+      _makeRequest(dataAction.url, dataAction.type, action, JSON.stringify(dataAction.data)).then((result) => {
+        
+        if (result.error !== null) {
+          console.warn('Error during request...')
+          console.error(result.error)
+          _uiHandler.manageMessageInfo(1, 'danger', result.error)
+          return false
+        }
+
+        if (result.info === null) {
+          _handleActionResult(target, action, dataAction).then(() => {
+            _uiHandler.manageMessageInfo(0, null, null)
+            return true
+          }).catch((err) => {
+            console.warn('Error during request...')
+            console.error(err)
+            _uiHandler.manageMessageInfo(1, 'danger', result.error)
+            return false
+          })
+        }
+
+        console.log(result.info)
+        _uiHandler.manageMessageInfo(1, 'warning', result.info)
+        return false
+
+      }).catch((err) => {
+        console.warn('Error during request...')
+        console.error(err)
+        _uiHandler.manageMessageInfo(1, 'danger', result.error)
+        return false
+      })
+
+    })
   }
 
-   /************************************************************/
+  /************************************************************/
+  /************************************************************/
+
+  /**********/
+  /********** HANDLE SUBMIT **********/
+  /**********/
+
+  _handleActionsSubmit = () => {
+    return () => {
+      _actionSubmit()
+    }
+  }
+
+  /************************************************************/
   /************************************************************/
 
   /**********/
@@ -55,8 +407,10 @@ const ActionsHandler = () => {
 
   return {
     init: () => {
-      const handler = _handleActionsClick()
-      handler()
+      const actionsHandler = _handleActionsClick()
+      const submitHandler = _handleActionsClick()
+      actionsHandle()
+      submitHandler()
     }
   }
 
