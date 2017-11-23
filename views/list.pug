@@ -2,17 +2,23 @@ if (books && books.length)
   div(id='books-list' class='grid')
     div.grid-sizer
     each book in books
-      div(id=book._id class='grid-item')
-        img(src=book.image)
-        h3= book.tite
-        p= book.description
-        p= book.isbn
-        p
-          if auth && book.user === user
-            a(class='btn btn-primary' href='books/edit/' + book._id) Edit
-            a(class='btn btn-danger action' href='#' data-action='delete-book' data-id=book._id) Delete
-          if auth && book.user !== user
-            a(class='btn btn-primary' href='trades/create/' + book._id + '/' + book.user) Make a trade
-            a(class='btn btn-default' href='users/profile/' + book.userData.username) #{book.userData.displayName}
+      if typeof book !== 'undefined'
+        div(id=book._id class='grid-item')
+          if book.image
+            img(src=book.image)
+          else
+            img(src='http://via.placeholder.com/350x150')
+          h3= book.title
+          p= book.description
+          p
+            | <strong>ISBN : </strong>#{book.isbn}
+          p
+            if typeof book.user !== 'undefined'
+              if auth && book.user === user._id
+                a(class='btn btn-primary' href='books/edit/' + book._id) Edit
+                a(class='btn btn-danger action' href='#' data-action='delete-book' data-id=book._id) Delete
+              if auth && book.user !== user._id
+                a(class='btn btn-primary' href='trades/create/' + book._id + '/' + book.user) Make a trade
+                a(class='btn btn-default' href='users/profile/' + book.userData.username) #{book.userData.displayName}
 else
   p No books!

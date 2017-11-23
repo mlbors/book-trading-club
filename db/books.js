@@ -180,7 +180,7 @@ const self = module.exports = {
 
       usersHelpers.getUserData(user).then((userData) => {
 
-        db.collection('stocks').insertOne({
+        db.collection('books').insertOne({
           _id: shortid.generate(),
           date: new Date(),
           title: title,
@@ -190,7 +190,7 @@ const self = module.exports = {
           user: user,
           userData: {
             username: userData.username,
-            displayNamed: userData.displayNamed
+            displayName: userData.displayName
           }
         },
         (err, res) => {
@@ -228,13 +228,15 @@ const self = module.exports = {
       
       if (err) return callback(err)
       
-      db.collection('stocks').updateOne({
+      db.collection('books').updateOne({
         _id: id
       },
       {
-        title: title,
-        isbn: isbn,
-        description: description
+        $set: {
+          title: title,
+          isbn: isbn,
+          description: description
+        }
       },
       (err, res) => {
         db.close()

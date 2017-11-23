@@ -89,7 +89,7 @@ passport.use(new TwitterStrategy({
 /*********************/
 
 passport.serializeUser((user, done) => {
-	done(null, user._id)
+	done(null, { _id: user._id, username: user.username, displayName: user.displayName })
 })
 
 /************************************************************/

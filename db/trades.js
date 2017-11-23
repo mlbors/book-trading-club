@@ -155,7 +155,7 @@ const self = module.exports = {
         bookTitle: bookTitle,
         receiver: receiver,
         sender: sender,
-        status: null,
+        status: 'open',
         closed: false
       },
       (err, res) => {
@@ -189,7 +189,10 @@ const self = module.exports = {
         _id: id
       },
       {
-        close: true
+        $set: {
+          closed: true,
+          status: 'closed'
+        }
       },
       (err, res) => {
         db.close()
@@ -223,7 +226,9 @@ const self = module.exports = {
         _id: id
       },
       {
-        status: status
+        $set: {
+          status: status
+        }
       },
       (err, res) => {
         db.close()
@@ -242,7 +247,7 @@ const self = module.exports = {
   /***********************/
 
   /*
-   * @var String id book's id
+   * @var String id trade's id
    * @var Function callback a callback function
    */
 
@@ -250,13 +255,13 @@ const self = module.exports = {
     
     MongoClient.connect(dbUrl, (err, db) => {
 
-      return callback(err)
+      if (err) return callback(err)
       
       db.collection('trades').deleteOne({
         _id: id
       }, (err, result) => {
         
-        return callback(err)
+        if (err) return callback(err)
 
         db.close()
         return callback(null, result)
@@ -281,11 +286,11 @@ const self = module.exports = {
     
     MongoClient.connect(dbUrl, (err, db) => {
 
-      return callback(err) 
+      if (err) return callback(err) 
       
       db.collection('trades').deleteMany({}, (err, result) => {
         
-        return callback(err)
+        if (err) return callback(err)
 
         db.close()
         return callback(null, result)

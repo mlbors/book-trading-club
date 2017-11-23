@@ -26,6 +26,8 @@ html
               if auth
                 li
                   a(class='add-book' href='/books/add-book') Add book
+                li
+                  a(class='add-book' href='/users/profile/' + user.username) My account
               li
                 if auth
                   a(class='logout' href='/logout') Log Out
@@ -40,7 +42,7 @@ html
 
       div(id='message-info')
         div.row
-          div.cold-md-12
+          div.col-md-12
             div.content
               p
 

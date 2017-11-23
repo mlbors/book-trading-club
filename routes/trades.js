@@ -25,11 +25,12 @@ const booksHelper = require('../helpers/books')
 /***** CREATE *****/
 /******************/
 
-router.get('/edit/:book/:receiver', (req, res) => {
+router.get('/create/:book/:receiver', (req, res) => {
   
-  res.render('book-form', {
+  res.render('new-trade', {
     title: 'Create trade',
     auth: req.isAuthenticated(),
+    user: req.user,
     book: req.params.book,
     receiver: req.params.receiver,
     error: null
@@ -49,7 +50,7 @@ router.post('/add', (req, res) => {
   const data = JSON.parse(req.body.data)
 
   booksHelper.getBook(data.book).then((bookData) => {
-    dbTrades.add(data.title, data.description, data.book, bookData.title, data.receiver, req.user, (err, result) => {
+    dbTrades.add(data.title, data.description, data.book, bookData.title, data.receiver, req.user._id, (err, result) => {
       res.send({
         auth: req.isAuthenticated(),
         info: null,
@@ -100,7 +101,7 @@ router.post('/update-status', (req, res) => {
 
   const data = JSON.parse(req.body.data)
 
-  dbTrades.updateStatus(req.body.trade, req.body.status, (err, result) => {
+  dbTrades.updateStatus(data.trade, data.status, (err, result) => {
     res.send({
       auth: req.isAuthenticated(),
       info: null,
@@ -117,11 +118,11 @@ router.post('/update-status', (req, res) => {
 /***** DELETE *****/
 /******************/
 
-router.post('/delete', (req, res) => {
+router.delete('/delete', (req, res) => {
 
   const data = JSON.parse(req.body.data)
 
-  dbTrades.delete(req.body.trade, (err, result) => {
+  dbTrades.delete(data.trade, (err, result) => {
     res.send({
       auth: req.isAuthenticated(),
       info: null,

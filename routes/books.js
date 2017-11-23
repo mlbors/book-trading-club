@@ -31,6 +31,7 @@ router.get('/', (req, res) => {
       books: results,
       info: null,
       auth: req.isAuthenticated(),
+      user: req.user,
       error: err
     })
   })
@@ -48,6 +49,7 @@ router.get('/add-book', (req, res) => {
   res.render('book-form', {
     title: 'Add book',
     auth: req.isAuthenticated(),
+    user: req.user,
     dataAction: 'add-book',
     action: '/books/add',
     submit: 'Add',
@@ -66,10 +68,11 @@ router.get('/add-book', (req, res) => {
 
 router.get('/edit/:id', (req, res) => {
 
-  dbBooks.findAll(req.params.id, (err, result) => {
+  dbBooks.findById(req.params.id, (err, result) => {
     res.render('book-form', {
       title: 'Edit book',
       auth: req.isAuthenticated(),
+      user: req.user,
       dataAction: 'edit-book',
       action: '/books/update',
       submit: 'Update',
@@ -93,16 +96,14 @@ router.post('/add', (req, res) => {
 
   let cover = null
 
-  if (data.isbn !== null && data.isbn === '') {
+  if (data.isbn !== null && data.isbn !== '') {
     googleBooksService.getData(data.isbn).then((bookData) => {
-      
-      console.log(bookData)
 
-      if (bookData.items[0].imageLinks.medium !== null) {
-        cover = bookData.items[0].imageLinks.medium
+      if (typeof bookData.data[0].volumeInfo.imageLinks !== 'undefined' && bookData.data[0].volumeInfo.imageLinks.thumbnail !== null) {
+        cover = bookData.data[0].volumeInfo.imageLinks.thumbnail
       }
       
-      dbBooks.add(data.title, data.isbn, data.description, cover, req.user, (err, result) => {
+      dbBooks.add(data.title, data.isbn, data.description, cover, req.user._id, (err, result) => {
         res.send({
           result: result,
           info: null,
@@ -116,12 +117,12 @@ router.post('/add', (req, res) => {
         result: null,
         info: null,
         auth: req.isAuthenticated(),
-        error: err
+        error: (typeof err.error !== 'undefined' && err.error !== null && err.error !== '') ? err.error : 'Error: ' + err
       })
     })
 
   } else {
-    dbBooks.add(data.title, data.isbn, data.description, cover, req.user, (err, result) => {
+    dbBooks.add(data.title, data.isbn, data.description, cover, req.user._id, (err, result) => {
       res.send({
         result: result,
         info: null,

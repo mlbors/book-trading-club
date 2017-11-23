@@ -2,16 +2,17 @@ if (trades && trades.length)
   ul(class='trades-list')
     each trade in trades
       li(id=trade._id class='trade-item')
-      | <strong>Title:</strong> #{trade.title} <br />
-      | <strong>Book:</strong> #{trade.bookTitle} <br />
-      | <strong>Description:</strong> #{trade.description} <br />
-      | <strong>Status:</strong> #{trade.status} <br />
-      if trade.sender === user && !trade.closed
-        a(class='btn btn-warning action close-trade' href='#' data-action='close-trade' data-id=trade._id) Close trade
-      if trade.sender === user && trade.closed
-        a(class='btn btn-primary action delete-trade' href='#' data-action='delete-trade' data-id=trade._id) Remove trade
-      if !trade.closed && trade.receiver === user && trade.status === null
-        a(class='btn btn-success action accept-trade' href='#' data-action='accept-trade' data-id=trade._id) Accept
-        a(class='btn btn-danger action decline-trade' href='#' data-action='decline-trade' data-id=trade._id) Decline
+        p <strong>Title:</strong> #{trade.title} <br />
+        p <strong>Book:</strong> #{trade.bookTitle} <br />
+        p <strong>Description:</strong> #{trade.description} <br />
+        p <strong>Status:</strong> <span class="status">#{trade.status}</span>
+        p 
+          if trade.sender === user._id && !trade.closed
+            a(class='btn btn-warning action close-trade' href='#' data-action='close-trade' data-id=trade._id) Close trade
+          if trade.sender === user._id && trade.closed
+            a(class='btn btn-primary action delete-trade' href='#' data-action='delete-trade' data-id=trade._id) Remove trade
+          if !trade.closed && trade.receiver === user._id && trade.status === 'open'
+            a(class='btn btn-success action accept-trade' href='#' data-action='accept-trade' data-id=trade._id) Accept
+            a(class='btn btn-danger action decline-trade' href='#' data-action='decline-trade' data-id=trade._id) Decline
 else
   p No requests!

@@ -79,23 +79,26 @@ const ActionsHandler = () => {
         case 'accept-trade':
           _uiHandler.manageMessageInfo(1, 'success', 'Trade accepted!')
           var li = $('li#' + data.trade)
-          li.children('a.accept-trade').remove()
-          li.children('a.decline-trade').remove()
+          li.find('span.status').html(data.status)
+          li.find('a.accept-trade').remove()
+          li.find('a.decline-trade').remove()
           resolve()
           break
 
         case 'decline-trade':
           _uiHandler.manageMessageInfo(1, 'success', 'Trade declined!')
           var li = $('li#' + data.trade)
-          li.children('a.accept-trade').remove()
-          li.children('a.decline-trade').remove()
+          li.find('span.status').html(data.status)
+          li.find('a.accept-trade').remove()
+          li.find('a.decline-trade').remove()
           resolve()
           break
   
         case 'close-trade':
           _uiHandler.manageMessageInfo(1, 'success', 'Trade closed!')
           var li = $('li#' + data.trade)
-          li.children('a.close-trade').remove()
+          li.find('span.status').html(data.status)
+          li.find('a.close-trade').remove()
           li.append('<a class="btn btn-primary action delete-trade" href="#" data-action="delete-trade" data-id="' + data.trade + '">Remove trade</a>')
           resolve()
           break
@@ -103,20 +106,19 @@ const ActionsHandler = () => {
         case 'delete-trade':
           _uiHandler.manageMessageInfo(1, 'success', 'Trade deleted!')
           var li = $('li#' + data.trade)
-          li.children('a.delete-trade').remove()
+          li.remove()
           resolve()
           break
   
         case 'delete-book':
           _uiHandler.manageMessageInfo(1, 'success', 'Book deleted!')
-          $('.grid div#' + data.book)
+          $('.grid div#' + data.book).remove()
           resolve()
           break
 
         case 'save-profile':
           _uiHandler.manageMessageInfo(1, 'success', 'Profile saved!')
-          $('#profil-form').find("input[type=text], textarea").val('')
-          resolve({redirection: window.location.origin + '/users/' + data.username})
+          resolve({redirection: window.location.origin + '/users/profile/' + data.username})
           break
 
         case 'add-book':
@@ -151,106 +153,113 @@ const ActionsHandler = () => {
   /*
    * @var Object target
    * @var String action
-   * @return Object
+   * @return Promise
    */
 
   _prepareAction = (target, action) => {
-    let dataAction = {}
+    return new Promise((resolve, reject) => {
 
-    let url = ''
-    let type = ''
-    let data = {}
+      let dataAction = {}
+      
+      let url = ''
+      let type = ''
+      let data = {}
+  
+      switch (action) {
+        case 'accept-trade':
+          url = '/trades/update-status'
+          type = 'POST'
+          data = {
+            trade: target.attr('data-id'),
+            status: 'accepted'
+          }
+          break
+  
+        case 'decline-trade':
+          url = '/trades/update-status'
+          type = 'POST'
+          data = {
+            trade: target.attr('data-id'),
+            status: 'declined'
+          }
+          break
+  
+        case 'close-trade':
+          url = '/trades/close'
+          type = 'POST'
+          data = {
+            trade: target.attr('data-id'),
+            status: 'closed'
+          }
+          break
+  
+        case 'delete-trade':
+          url = '/trades/delete'
+          type = 'DELETE'
+          data = {
+            trade: target.attr('data-id')
+          }
+          break
+  
+        case 'delete-book':
+          url = '/books/delete'
+          type = 'DELETE'
+          data = {
+            book: target.attr('data-id')
+          }
+          break
+  
+        case 'save-profile':
+          url = '/users/save-profile'
+          type = 'POST'
+          data = {
+            bio: $('#profil-form #bio').val(),
+            username: $('#profil-form #username').val()
+          }
+          break
+  
+        case 'add-book':
+          url = '/books/add'
+          type = 'POST'
+          data = {
+            title: $('#book-form #title').val(),
+            isbn: $('#book-form #isbn').val(),
+            description: $('#book-form #description').val()
+          }
+          break
+  
+        case 'edit-book':
+          url = '/books/update'
+          type = 'POST'
+          data = {
+            title: $('#book-form #title').val(),
+            isbn: $('#book-form #isbn').val(),
+            description: $('#book-form #description').val(),
+            book: $('#book-form #book').val()
+          }
+          break
+  
+        case 'add-trade':
+          url = '/trades/add'
+          type = 'POST'
+          data = {
+            title: $('#trade-form #title').val(),
+            description: $('#trade-form #description').val(),
+            book: $('#trade-form #book').val(),
+            receiver: $('#trade-form #receiver').val()
+          }
+          break
+      }
+  
+      dataAction = {
+        url: url,
+        type: type,
+        data: data
+      }
+  
+      resolve(dataAction)
 
-    switch (action) {
-      case 'accept-trade':
-        url = '/trades/update-status'
-        type = 'POST'
-        data = {
-          trade: target.attr('data-id'),
-          status: 'accepted'
-        }
-        break
-
-      case 'decline-trade':
-        url = '/trades/update-status'
-        type = 'POST'
-        data = {
-          trade: target.attr('data-id'),
-          status: 'declined'
-        }
-        break
-
-      case 'close-trade':
-        url = '/trades/close'
-        type = 'POST'
-        data = {
-          trade: target.attr('data-id')
-        }
-        break
-
-      case 'delete-trade':
-        url = '/trades/delete'
-        type = 'POST'
-        data = {
-          trade: target.attr('data-id')
-        }
-        break
-
-      case 'delete-book':
-        url = '/books/delete'
-        type = 'DELETE'
-        data = {
-          book: target.attr('data-id')
-        }
-        break
-
-      case 'save-profile':
-        url = '/users/save-profile'
-        type = 'POST'
-        data = {
-          bio: $('#profil-form #bio').val(),
-          username: $('#profil-form #username').val()
-        }
-        break
-
-      case 'add-book':
-        url = '/books/add'
-        type = 'POST'
-        data = {
-          title: $('#book-form #title').val(),
-          isbn: $('#book-form #isbn').val(),
-          description: $('#book-form #description').val()
-        }
-        break
-
-      case 'edit-book':
-        url = '/books/update'
-        type = 'POST'
-        data = {
-          title: $('#book-form #title').val(),
-          isbn: $('#book-form #isbn').val(),
-          description: $('#book-form #description').val(),
-          book: $('#book-form #book').val()
-        }
-        break
-
-      case 'add-trade':
-        url = '/trades/add'
-        type = 'POST'
-        data = {
-          book: $('#trade-form #book').val(),
-          receiver: $('#trade-form #receiver').val()
-        }
-        break
-    }
-
-    dataAction = {
-      url: url,
-      type: type,
-      data: data
-    }
-
-    return dataAction
+    })
   }
 
   /************************************************************/
@@ -268,50 +277,54 @@ const ActionsHandler = () => {
     $(document).on('submit', 'form.action-form', (e) => {
       e.preventDefault()
 
-      console.log('submit')
-
       _uiHandler.manageMessageInfo(0, null, null)
 
       const target = $(e.currentTarget)
       const action = target.attr('data-action')
-      const dataAction = _prepareAction(target, action)
 
-      console.log(target)
-
-      _makeRequest(dataAction.url, dataAction.type, action, JSON.stringify(dataAction.data)).then((result) => {
+      _prepareAction(target, action).then((dataAction) => {
         
-        if (result.error !== null) {
-          console.warn('Error during request...')
-          console.error(result.error)
-          _uiHandler.manageMessageInfo(1, 'danger', result.error)
-          return false
-        }
-
-        if (result.info === null) {
-          _handleActionResult(target, action, dataAction).then((handleResult) => {
-            _uiHandler.manageMessageInfo(0, null, null)
-
-            if (typeof handleResult.redirection !== 'undefined' && handleResult.redirection !== null) {
-              setTimeout(() => {
-                window.location.replace(handleResult.redirection)
-              }, 2500)
-            }
-            
-            return false
-          }).catch((err) => {
+        _makeRequest(dataAction.url, dataAction.type, action, JSON.stringify(dataAction.data)).then((result) => {
+          
+          if (result.error !== null) {
             console.warn('Error during request...')
-            console.error(err)
+            console.error(result.error)
             _uiHandler.manageMessageInfo(1, 'danger', result.error)
             return false
-          })
-        }
+          }
+  
+          if (result.info === null) {
 
-        console.log(result.info)
-        _uiHandler.manageMessageInfo(1, 'warning', result.info)
-        return false
+            _handleActionResult(target, action, dataAction.data).then((handleResult) => {
+              setTimeout(() => {
+                if (typeof handleResult.redirection !== 'undefined' && handleResult.redirection !== null) {
+                  _uiHandler.manageMessageInfo(0, null, null)
+                  window.location.replace(handleResult.redirection)
+                }
+              }, 5000)
+              return false
+            }).catch((err) => {
+              console.warn('Error during request...')
+              console.error(err)
+              _uiHandler.manageMessageInfo(1, 'danger', result.error)
+              return false
+            })
+
+          } else {
+            console.log(result.info)
+            _uiHandler.manageMessageInfo(1, 'warning', result.info)
+            return false
+          }
+
+        }).catch((err) => {
+          console.warn('Error during request...')
+          console.error(err)
+          _uiHandler.manageMessageInfo(1, 'danger', result.error)
+          return false
+        })
 
       }).catch((err) => {
-        console.warn('Error during request...')
+        console.warn('Error while preparing data...')
         console.error(err)
         _uiHandler.manageMessageInfo(1, 'danger', result.error)
         return false
@@ -339,35 +352,47 @@ const ActionsHandler = () => {
 
       const target = $(e.currentTarget)
       const action = target.attr('data-action')
-      const dataAction = _prepareAction(target, action)
 
-      _makeRequest(dataAction.url, dataAction.type, action, JSON.stringify(dataAction.data)).then((result) => {
-        
-        if (result.error !== null) {
-          console.warn('Error during request...')
-          console.error(result.error)
-          _uiHandler.manageMessageInfo(1, 'danger', result.error)
-          return false
-        }
+      _prepareAction(target, action).then((dataAction) => {
 
-        if (result.info === null) {
-          _handleActionResult(target, action, dataAction).then(() => {
-            _uiHandler.manageMessageInfo(0, null, null)
-            return true
-          }).catch((err) => {
+        _makeRequest(dataAction.url, dataAction.type, action, JSON.stringify(dataAction.data)).then((result) => {
+          
+          if (result.error !== null) {
             console.warn('Error during request...')
-            console.error(err)
+            console.error(result.error)
             _uiHandler.manageMessageInfo(1, 'danger', result.error)
             return false
-          })
-        }
+          }
+  
+          if (result.info === null) {
 
-        console.log(result.info)
-        _uiHandler.manageMessageInfo(1, 'warning', result.info)
-        return false
+            _handleActionResult(target, action, dataAction.data).then(() => {
+              setTimeout(() => {
+                _uiHandler.manageMessageInfo(0, null, null)
+              }, 5000)
+              return false
+            }).catch((err) => {
+              console.warn('Error during request...')
+              console.error(err)
+              _uiHandler.manageMessageInfo(1, 'danger', result.error)
+              return false
+            })
+
+          } else {
+            console.log(result.info)
+            _uiHandler.manageMessageInfo(1, 'warning', result.info)
+            return false
+          }
+
+        }).catch((err) => {
+          console.warn('Error during request...')
+          console.error(err)
+          _uiHandler.manageMessageInfo(1, 'danger', result.error)
+          return false
+        })
 
       }).catch((err) => {
-        console.warn('Error during request...')
+        console.warn('Error while preparing data...')
         console.error(err)
         _uiHandler.manageMessageInfo(1, 'danger', result.error)
         return false
@@ -409,9 +434,9 @@ const ActionsHandler = () => {
   /********** SET UI HANDLER **********/
   /**********/
 
-   /*
-    * @var Object uiHandler Object that handles UI
-    */
+  /*
+   * @var Object uiHandler Object that handles UI
+   */
 
   _setUiHandler = (uiHandler) => {
     _uiHandler = uiHandler

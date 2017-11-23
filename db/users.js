@@ -114,7 +114,9 @@ const self = module.exports = {
         _id: id
       },
       {
-        bio: bio
+        $set: {
+          bio: bio
+        }
       },
       (err, res) => {
         db.close()

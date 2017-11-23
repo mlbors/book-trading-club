@@ -51,6 +51,17 @@ img.responsive-image {
 
 #main #message-info {
   display: none;
+  margin-bottom: 30px;
+}
+
+#main #message-info .content {
+  padding: 15px;
+  border-width: 1px;
+  border-style: solid;
+}
+
+#main #message-info .content p {
+  margin-bottom: 0;
 }
 
 #footer {
@@ -61,7 +72,8 @@ img.responsive-image {
 
 .grid-item {
   float: left;
-  border: 2px solid #c1c1c1;
+  padding: 15px;
+  border: 1px solid #e7e7e7;
 }
 
 .grid-sizer,
@@ -86,7 +98,7 @@ img.responsive-image {
 }
 
 .grid-item .btn {
-  margin-left: 5px;
+  margin-right: 5px;
 }
 
 #main ul.trades-list {
@@ -96,6 +108,12 @@ img.responsive-image {
   clear: both;
 }
 
+#main ul li.trade-item  {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e7e7e7;
+}
+
 #main ul li.trade-item .btn {
-  margin-left: 5px;
+  margin-right: 5px;
 }

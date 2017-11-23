@@ -18,6 +18,7 @@ var router = express.Router()
 const auth = require('./auth')
 const logout = require('./logout')
 const books = require('./books')
+const trades = require('./trades')
 const dbBooks = require('../db/books')
 
 /************************************************************/
@@ -31,11 +32,10 @@ router.get('/', (req, res) => {
 
   dbBooks.findAll((err, results) => {
 
-    console.log(results)
-
     res.render('index', {
       title: 'List of books',
       auth: req.isAuthenticated(),
+      user: req.user,
       error: err,
       books: results
     })
@@ -70,6 +70,15 @@ router.use('/logout', logout)
 /*****************/
 
 router.use('/books', books)
+
+/************************************************************/
+/************************************************************/
+
+/******************/
+/***** TRADES *****/
+/******************/
+
+router.use('/trades', trades)
 
 /************************************************************/
 /************************************************************/

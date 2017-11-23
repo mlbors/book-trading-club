@@ -2,43 +2,44 @@ extends layout
 
 block content
 
-  div.row
-    div.col-md-12
-      h1= title
-
-  div.row
-    div.col-md-12
-      h2 Info
-
-  if (data !== null)
+  if (typeof data !== 'unedfined' && data !== null)
     div.row
       div.col-md-12
-        p <strong>Name :</strong> #{data.name}
+        h2 Info
+
+    div.row
+      div.col-md-12
+        p <strong>Name :</strong> #{data.displayName}
+        p <strong>Username :</strong> #{data.username}
         p <strong>Bio :</strong> #{data.bio}
-        if (auth && data._id === user)
+        if (auth && data._id === user._id)
           p
-            a(class='btn btn-primary' href='users/edit-profile/' + data._id) Edit profile
+            a(class='btn btn-primary' href='/users/edit-profile/' + data._id) Edit profile
 
-  if (auth && data._id === user)
-    div.row
-      div.col-md-12
-        h2 Your trades
-    div.row
-      div.col-md-12
-        - var trades = userTrades
-        include trades.pug
-    div.row
-      div.col-md-12
-        h2 Trades you have received
-    div.row
-      div.col-md-12
-        - var trades = receivedTrades
-        include trades.pug
+    if (auth && data._id === user._id)
+      div.row
+        div.col-md-12
+          h2 Your trades
+      div.row
+        div.col-md-12
+          - var trades = userTrades
+          include trades.pug
+      div.row
+        div.col-md-12
+          h2 Trades you have received
+      div.row
+        div.col-md-12
+          - var trades = receivedTrades
+          include trades.pug
 
-  div.row
-    div.col-md-12
-      h2 Books
+    div.row
+      div.col-md-12
+        h2 Books
 
-  div.row
-    div.col-md-12
-      include list.pug
+    div.row
+      div.col-md-12
+        include list.pug
+  else
+    div.row
+      div.col-md-12
+        p This profile doesn't

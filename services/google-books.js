@@ -26,7 +26,7 @@ require('dotenv').config()
 
 const googleBooksApi = {
   api_key: process.env.GOOGLE_BOOKS_API_KEY,
-  api_url: 'https://www.googleapis.com/books/v1/volumes?key=' + this.api_key
+  api_url: 'https://www.googleapis.com/books/v1/volumes?fields=items(volumeInfo(title,subtitle,authors,imageLinks))&key=' + process.env.GOOGLE_BOOKS_API_KEY,
 }
 
 /************************************************************/
@@ -46,7 +46,7 @@ const self = module.exports = {
   getData: (isbn) => {
     return new Promise((resolve, reject) => {
 
-      const url = googleBooksApi.api_url + '?q=isbn:' + isbn
+      const url = googleBooksApi.api_url + '&q=isbn:' + isbn
 
       request(url, (error, response, body) => {
 
@@ -65,7 +65,7 @@ const self = module.exports = {
           }
 
           resolve({
-            data: data,
+            data: data.items,
             error: null,
             status: response.statusCode,
             response: response
@@ -74,7 +74,7 @@ const self = module.exports = {
         }
 
         reject({
-          error: error,
+          error: (typeof data.error.errors.message !== 'undefined' && data.error.errors.message !== '' && data.error.errors.message !== null) ? data.error.errors.message : 'Error with Google Books',
           status: response.statusCode,
           response: response
         })
